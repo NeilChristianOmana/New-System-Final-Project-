@@ -1,0 +1,22 @@
+CREATE DATABASE barangay_incident_system;
+
+USE barangay_incident_system;
+
+CREATE TABLE incidents (
+    incident_id INT AUTO_INCREMENT PRIMARY KEY,
+    incident_type VARCHAR(100) NOT NULL,
+    date_of_incident DATE NOT NULL,
+    time_of_incident TIME NOT NULL,
+    location_zone VARCHAR(255) NOT NULL,
+    description TEXT,
+    persons_involved TEXT,
+    status VARCHAR(50),
+    attachment_path VARCHAR(255),
+    category ENUM('Fatal', 'Non-Fatal') NOT NULL
+);
+
+CREATE TABLE accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
