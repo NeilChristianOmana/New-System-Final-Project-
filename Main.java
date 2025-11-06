@@ -12,7 +12,7 @@ public class Main {
             Scanner sc = new Scanner(System.in);
 
             while (true) {
-                System.out.println("");
+                System.out.println("CHOOSE");
                 System.out.println("1. View All Records");
                 System.out.println("2. Insert New Record");
                 System.out.println("3. Exit");
@@ -27,7 +27,7 @@ public class Main {
                         System.out.println("Exit");
                         return;
                     }
-                    default -> System.out.println("Invalid choice, please try again.");
+                    default -> System.out.println("Invalid choice");
                 }
             }
         } catch (SQLException e) {
@@ -40,7 +40,7 @@ public class Main {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
-            System.out.println("\n--- LIVESTOCK RECORDS ---");
+            System.out.println("RECORD");
             System.out.printf("%-5s %-20s %-15s%n", "ID", "Persons Involve", "Date Recorded");
 
             while (rs.next()) {
@@ -50,7 +50,7 @@ public class Main {
                 System.out.printf("%-5d %-20s %-15s%n", id, Person, date);
             }
         } catch (SQLException e) {
-            System.out.println("Error retrieving data!");
+            System.out.println("Error");
             e.printStackTrace();
         }
     }
@@ -115,10 +115,10 @@ public class Main {
 
             int rows = pstmt.executeUpdate();
             if (rows > 0) {
-                System.out.println("New livestock record added successfully!");
+                System.out.println("added successfully");
             }
         } catch (SQLException e) {
-            System.out.println("Error inserting record!");
+            System.out.println("Error");
             e.printStackTrace();
         }
     }
