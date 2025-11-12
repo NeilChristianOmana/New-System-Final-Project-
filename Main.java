@@ -62,7 +62,6 @@ public class Main {
         String sql = """
             INSERT INTO non_fatal (
                         Incident_type varchar,
-                        Select_type varchar,
                         recorded_time,
                         Date_of_Incident,
                         Location_or_Zone,
@@ -80,7 +79,6 @@ public class Main {
             int index = 2;
             String[] incident = {
                     "Incident_type",
-                    "Select_type",
                     "recorded_time",
                     "Date_of_Incident",
                     "Location_or_Zone",
@@ -91,8 +89,6 @@ public class Main {
             for (String person : incident) {
                 System.out.print(person + " (Incident_type): ");
                 String Incident_type = sc.nextLine();
-                System.out.print(person + " (Select_type): ");
-                String Select_type = sc.nextLine();
                 System.out.print(person + " (recorded_time): ");
                 int recorded_time = sc.nextInt();
                 System.out.print(person + " (Date_of_Incident): ");
@@ -107,7 +103,6 @@ public class Main {
                 String Description_of_incident = sc.nextLine();
 
                 pstmt.setString(index++, Incident_type);
-                pstmt.setString(index++, Select_type);
                 pstmt.setInt(index++, recorded_time);
                 pstmt.setInt(index++, Date_of_Incident);
                 pstmt.setString(index++, Location_or_Zone);
