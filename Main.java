@@ -14,8 +14,10 @@ public class Main {
             while (true) {
                 System.out.println("CHOOSE");
                 System.out.println("1. View All Records");
-                System.out.println("2. Insert New Record");
-                System.out.println("3. Exit");
+                System.out.println("2. Insert New Record in Fatal");
+                System.out.println("3. Create Account");
+                System.out.println("4. Login");
+                System.out.println("5. Exit");
                 System.out.print("Enter choice: ");
                 int choice = sc.nextInt();
                 sc.nextLine();
@@ -23,7 +25,9 @@ public class Main {
                 switch (choice) {
                     case 1 -> viewRecords(conn);
                     case 2 -> insertRecord(conn, sc);
-                    case 3 -> {
+                    case 3 -> createAccount(conn, sc);
+                    case 4 -> login(conn, sc);    
+                    case 5 -> {
                         System.out.println("Exit");
                         return;
                     }
@@ -120,6 +124,46 @@ public class Main {
         } catch (SQLException e) {
             System.out.println("Error");
             e.printStackTrace();
+    }
+      private static void createAccount(Connection conn, Scanner sc) {
+        System.out.print("Enter username: ");
+        String username = sc.nextLine();
+        System.out.print("Enter password: ");
+        String password = sc.nextLine();
+
+        String sql = "INSERT INTO accounts (username, password) VALUES (?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.executeUpdate();
+            System.out.println("created successfully");
+        } catch (SQLException e) {
+            System.out.println("already exists");
         }
     }
-}
+    private static void login(Connection conn, Scanner sc) {
+        System.out.print("Enter username: ");
+        String username = sc.nextLine();
+        System.out.print("Enter password: ");
+        String password = sc.nextLine();
+
+        String sql = "SELECT * FROM accounts WHERE username=? AND password=?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Login successful " + username);
+            } else {
+                System.out.println("Invalid username or password");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}   
+
