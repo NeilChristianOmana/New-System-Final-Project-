@@ -23,9 +23,9 @@ public class Main {
                 sc.nextLine();
 
                 switch (choice) {
-                    case 1 -> viewRecords(conn);
-                    case 2 -> insertRecord(conn, sc);
-                    case 3 -> createAccount(conn, sc);
+                    case 1 -> viewRecords(con);
+                    case 2 -> insertRecord(con, sc);
+                    case 3 -> createAccount(con, sc);
                     case 4 -> login(conn, sc);    
                     case 5 -> {
                         System.out.println("Exit");
@@ -39,7 +39,7 @@ public class Main {
             e.printStackTrace();
         }
     }
-    public static void viewRecords(Connection conn) {
+    public static void viewRecords(Connection con) {
         String query = "SELECT id, Persons_involve, Date_recorded FROM non_fatal ORDER BY id ASC";
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -58,11 +58,11 @@ public class Main {
             e.printStackTrace();
         }
     }
-    public static void insertRecord(Connection conn, Scanner sc) {
+    public static void insertRecord(Connection con, Scanner sc) {
         String sql = """
             INSERT INTO non_fatal (
                         Incident_type varchar,
-                        recorded_time,
+                        Time_of_Incident,
                         Date_of_Incident,
                         Location_or_Zone,
                         Persons_involve,
@@ -79,7 +79,7 @@ public class Main {
             int index = 2;
             String[] incident = {
                     "Incident_type",
-                    "recorded_time",
+                    "Time_of_Incident",
                     "Date_of_Incident",
                     "Location_or_Zone",
                     "Persons_involve",
@@ -89,8 +89,8 @@ public class Main {
             for (String person : incident) {
                 System.out.print(person + " (Incident_type): ");
                 String Incident_type = sc.nextLine();
-                System.out.print(person + " (recorded_time): ");
-                int recorded_time = sc.nextInt();
+                System.out.print(person + " (Time_of_Incident): ");
+                int Time_of_Incident = sc.nextInt();
                 System.out.print(person + " (Date_of_Incident): ");
                 int Date_of_Incident = sc.nextInt();
                 System.out.println(person + " (Location_or_Zone): ");
@@ -103,7 +103,7 @@ public class Main {
                 String Description_of_incident = sc.nextLine();
 
                 pstmt.setString(index++, Incident_type);
-                pstmt.setInt(index++, recorded_time);
+                pstmt.setInt(index++, Time_of_Incident);
                 pstmt.setInt(index++, Date_of_Incident);
                 pstmt.setString(index++, Location_or_Zone);
                 pstmt.setString(index++, Persons_involve);
@@ -120,7 +120,16 @@ public class Main {
             System.out.println("Error");
             e.printStackTrace();
     }
-      private static void createAccount(Connection conn, Scanner sc) {
+    public static void delete(Connection con, Scanner sc){
+        
+    }  
+    public static void edit(Connection con, Scanner sc) {
+        
+    }    
+    public static void search(Connection con, Scanner sc) {
+        
+    }   
+      public static void createAccount(Connection con, Scanner sc) {
         System.out.print("Enter username: ");
         String username = sc.nextLine();
         System.out.print("Enter password: ");
@@ -137,7 +146,7 @@ public class Main {
             System.out.println("already exists");
         }
     }
-    private static void login(Connection conn, Scanner sc) {
+    public static void login(Connection con, Scanner sc) {
         System.out.print("Enter username: ");
         String username = sc.nextLine();
         System.out.print("Enter password: ");
