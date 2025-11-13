@@ -3,19 +3,18 @@ import java.util.Scanner;
 
 public class IncidentSystem {
 
-    // Database connection settings
     static final String URL = "jdbc:mysql://localhost:3306/barangay_incident_system?useSSL=false";
-    static final String USER = "root"; // your MySQL username
-    static final String PASSWORD = "your_mysql_password_here"; // your MySQL password
+    static final String USER = "root";
+    static final String PASSWORD = "neil@2005";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            System.out.println("Connected to MySQL successfully!");
+            System.out.println("Connected");
 
             while (true) {
-                System.out.println("\n=== BARANGAY INCIDENT SYSTEM ===");
+                System.out.println("BARANGAY INCIDENT SYSTEM");
                 System.out.println("1. Add Incident");
                 System.out.println("2. Edit Incident");
                 System.out.println("3. Delete Incident");
@@ -24,7 +23,7 @@ public class IncidentSystem {
                 System.out.println("6. Exit");
                 System.out.print("Choose option: ");
                 int choice = sc.nextInt();
-                sc.nextLine(); // consume newline
+                sc.nextLine();
 
                 switch (choice) {
                     case 1 -> addIncident(conn, sc);
@@ -36,15 +35,13 @@ public class IncidentSystem {
                         System.out.println("Exiting system...");
                         return;
                     }
-                    default -> System.out.println("Invalid choice!");
+                    default -> System.out.println("Invalid");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-    // --- Add Incident ---
     private static void addIncident(Connection conn, Scanner sc) throws SQLException {
         System.out.print("Incident Type: ");
         String type = sc.nextLine();
@@ -52,7 +49,7 @@ public class IncidentSystem {
         System.out.print("Time of Incident (HH:MM): ");
         String time = sc.nextLine();
 
-        System.out.print("Date of Incident (YYYYMMDD as integer): ");
+        System.out.print("Date of Incident (YYYY/MM/DD): ");
         int date = sc.nextInt();
         sc.nextLine();
 
@@ -78,11 +75,9 @@ public class IncidentSystem {
             ps.setString(6, status);
             ps.setString(7, desc);
             ps.executeUpdate();
-            System.out.println("✅ Incident added successfully!");
+            System.out.println("Incident added");
         }
     }
-
-    // --- Edit Incident ---
     private static void editIncident(Connection conn, Scanner sc) throws SQLException {
         System.out.print("Enter Incident ID to edit: ");
         int id = sc.nextInt();
@@ -94,7 +89,7 @@ public class IncidentSystem {
         System.out.print("New Time of Incident (HH:MM): ");
         String time = sc.nextLine();
 
-        System.out.print("New Date of Incident (YYYYMMDD as integer): ");
+        System.out.print("New Date of Incident (YYYY/MM/DD): ");
         int date = sc.nextInt();
         sc.nextLine();
 
@@ -126,12 +121,10 @@ public class IncidentSystem {
             ps.setInt(8, id);
 
             int rows = ps.executeUpdate();
-            if (rows > 0) System.out.println("✅ Incident updated successfully!");
-            else System.out.println("⚠️ No record found with that ID.");
+            if (rows > 0) System.out.println("Incident Edited");
+            else System.out.println("No record found");
         }
     }
-
-    // --- Delete Incident ---
     private static void deleteIncident(Connection conn, Scanner sc) throws SQLException {
         System.out.print("Enter Incident ID to delete: ");
         int id = sc.nextInt();
@@ -141,16 +134,14 @@ public class IncidentSystem {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             int rows = ps.executeUpdate();
-            if (rows > 0) System.out.println("🗑️ Incident deleted successfully!");
-            else System.out.println("⚠️ No record found with that ID.");
+            if (rows > 0) System.out.println("Incident deleted");
+            else System.out.println("No record.");
         }
     }
-
-    // --- View All Incidents ---
     private static void viewIncidents(Connection conn) throws SQLException {
         String sql = "SELECT * FROM incidentsFatal";
         try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-            System.out.println("\n--- All Incidents ---");
+            System.out.println("All Incidents");
             while (rs.next()) {
                 System.out.println("ID: " + rs.getInt("incident_id"));
                 System.out.println("Type: " + rs.getString("Incident_type"));
@@ -161,14 +152,11 @@ public class IncidentSystem {
                 System.out.println("Status: " + rs.getString("Persons_status"));
                 System.out.println("Description: " + rs.getString("Description_of_incident"));
                 System.out.println("Date Recorded: " + rs.getTimestamp("Date_recorded"));
-                System.out.println("----------------------------------");
             }
         }
     }
-
-    // --- Search Incident ---
     private static void searchIncident(Connection conn, Scanner sc) throws SQLException {
-        System.out.print("Enter Incident ID to search: ");
+        System.out.print("Enter Incident ID: ");
         int id = sc.nextInt();
         sc.nextLine();
 
@@ -186,7 +174,7 @@ public class IncidentSystem {
                     System.out.println("Status: " + rs.getString("Persons_status"));
                     System.out.println("Description: " + rs.getString("Description_of_incident"));
                 } else {
-                    System.out.println("⚠️ No incident found with that ID.");
+                    System.out.println("No incident found.");
                 }
             }
         }
