@@ -1,0 +1,194 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class IncidentSystem {
+
+    // Database connection settings
+    static final String URL = "jdbc:mysql://localhost:3306/barangay_incident_system?useSSL=false";
+    static final String USER = "root"; // your MySQL username
+    static final String PASSWORD = "your_mysql_password_here"; // your MySQL password
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            System.out.println("Connected to MySQL successfully!");
+
+            while (true) {
+                System.out.println("\n=== BARANGAY INCIDENT SYSTEM ===");
+                System.out.println("1. Add Incident");
+                System.out.println("2. Edit Incident");
+                System.out.println("3. Delete Incident");
+                System.out.println("4. View All Incidents");
+                System.out.println("5. Search Incident by ID");
+                System.out.println("6. Exit");
+                System.out.print("Choose option: ");
+                int choice = sc.nextInt();
+                sc.nextLine(); // consume newline
+
+                switch (choice) {
+                    case 1 -> addIncident(conn, sc);
+                    case 2 -> editIncident(conn, sc);
+                    case 3 -> deleteIncident(conn, sc);
+                    case 4 -> viewIncidents(conn);
+                    case 5 -> searchIncident(conn, sc);
+                    case 6 -> {
+                        System.out.println("Exiting system...");
+                        return;
+                    }
+                    default -> System.out.println("Invalid choice!");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // --- Add Incident ---
+    private static void addIncident(Connection conn, Scanner sc) throws SQLException {
+        System.out.print("Incident Type: ");
+        String type = sc.nextLine();
+
+        System.out.print("Time of Incident (HH:MM): ");
+        String time = sc.nextLine();
+
+        System.out.print("Date of Incident (YYYYMMDD as integer): ");
+        int date = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Location or Zone: ");
+        String location = sc.nextLine();
+
+        System.out.print("Persons Involved: ");
+        String persons = sc.nextLine();
+
+        System.out.print("Persons Status: ");
+        String status = sc.nextLine();
+
+        System.out.print("Description of Incident: ");
+        String desc = sc.nextLine();
+
+        String sql = "INSERT INTO incidentsFatal (Incident_type, Time_of_Incident, Date_of_Incident, Location_or_Zone, Persons_involve, Persons_status, Description_of_incident) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, type);
+            ps.setString(2, time);
+            ps.setInt(3, date);
+            ps.setString(4, location);
+            ps.setString(5, persons);
+            ps.setString(6, status);
+            ps.setString(7, desc);
+            ps.executeUpdate();
+            System.out.println("✅ Incident added successfully!");
+        }
+    }
+
+    // --- Edit Incident ---
+    private static void editIncident(Connection conn, Scanner sc) throws SQLException {
+        System.out.print("Enter Incident ID to edit: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("New Incident Type: ");
+        String type = sc.nextLine();
+
+        System.out.print("New Time of Incident (HH:MM): ");
+        String time = sc.nextLine();
+
+        System.out.print("New Date of Incident (YYYYMMDD as integer): ");
+        int date = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("New Location or Zone: ");
+        String location = sc.nextLine();
+
+        System.out.print("New Persons Involved: ");
+        String persons = sc.nextLine();
+
+        System.out.print("New Persons Status: ");
+        String status = sc.nextLine();
+
+        System.out.print("New Description of Incident: ");
+        String desc = sc.nextLine();
+
+        String sql = """
+                UPDATE incidentsFatal
+                SET Incident_type=?, Time_of_Incident=?, Date_of_Incident=?, Location_or_Zone=?, 
+                    Persons_involve=?, Persons_status=?, Description_of_incident=?
+                WHERE incident_id=?""";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, type);
+            ps.setString(2, time);
+            ps.setInt(3, date);
+            ps.setString(4, location);
+            ps.setString(5, persons);
+            ps.setString(6, status);
+            ps.setString(7, desc);
+            ps.setInt(8, id);
+
+            int rows = ps.executeUpdate();
+            if (rows > 0) System.out.println("✅ Incident updated successfully!");
+            else System.out.println("⚠️ No record found with that ID.");
+        }
+    }
+
+    // --- Delete Incident ---
+    private static void deleteIncident(Connection conn, Scanner sc) throws SQLException {
+        System.out.print("Enter Incident ID to delete: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        String sql = "DELETE FROM incidentsFatal WHERE incident_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            int rows = ps.executeUpdate();
+            if (rows > 0) System.out.println("🗑️ Incident deleted successfully!");
+            else System.out.println("⚠️ No record found with that ID.");
+        }
+    }
+
+    // --- View All Incidents ---
+    private static void viewIncidents(Connection conn) throws SQLException {
+        String sql = "SELECT * FROM incidentsFatal";
+        try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            System.out.println("\n--- All Incidents ---");
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("incident_id"));
+                System.out.println("Type: " + rs.getString("Incident_type"));
+                System.out.println("Time: " + rs.getTime("Time_of_Incident"));
+                System.out.println("Date: " + rs.getInt("Date_of_Incident"));
+                System.out.println("Location: " + rs.getString("Location_or_Zone"));
+                System.out.println("Persons: " + rs.getString("Persons_involve"));
+                System.out.println("Status: " + rs.getString("Persons_status"));
+                System.out.println("Description: " + rs.getString("Description_of_incident"));
+                System.out.println("Date Recorded: " + rs.getTimestamp("Date_recorded"));
+                System.out.println("----------------------------------");
+            }
+        }
+    }
+
+    // --- Search Incident ---
+    private static void searchIncident(Connection conn, Scanner sc) throws SQLException {
+        System.out.print("Enter Incident ID to search: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        String sql = "SELECT * FROM incidentsFatal WHERE incident_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    System.out.println("Incident ID: " + rs.getInt("incident_id"));
+                    System.out.println("Type: " + rs.getString("Incident_type"));
+                    System.out.println("Time: " + rs.getTime("Time_of_Incident"));
+                    System.out.println("Date: " + rs.getInt("Date_of_Incident"));
+                    System.out.println("Location: " + rs.getString("Location_or_Zone"));
+                    System.out.println("Persons: " + rs.getString("Persons_involve"));
+                    System.out.println("Status: " + rs.getString("Persons_status"));
+                    System.out.println("Description: " + rs.getString("Description_of_incident"));
+                } else {
+                    System.out.println("⚠️ No incident found with that ID.");
+                }
+            }
+        }
+    }
+}
