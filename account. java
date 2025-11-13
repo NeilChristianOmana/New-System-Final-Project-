@@ -2,9 +2,9 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Main {
-    static final String URL = "jdbc:mysql://localhost:3306/user_accounts?useSSL=false";
+    static final String URL = "jdbc:mysql://localhost:3306/barangay_incident_system?useSSL=false";
     static final String USER = "root";
-    static final String PASSWORD = "Bens@200694";
+    static final String PASSWORD = "neil@2005";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
